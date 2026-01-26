@@ -34,10 +34,7 @@ interface NavbarProps {
   className?: string;
   logo?: {
     url: string;
-    src: string;
-    alt: string;
     title: string;
-    className?: string;
   };
   menu?: MenuItem[];
   auth?: {
@@ -54,9 +51,7 @@ interface NavbarProps {
 
 const Navbar = ({
   logo = {
-    url: "https://www.shadcnblocks.com",
-    src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-icon.svg",
-    alt: "logo",
+    url: "/",
     title: "MediStore 💊",
   },
   menu = [

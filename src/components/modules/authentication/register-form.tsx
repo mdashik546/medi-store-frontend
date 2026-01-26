@@ -21,19 +21,30 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
-  email: z.email(),
+  email: z.email("Invalid email address."),
   password: z.string().min(6, "Password must be at least 6 characters."),
+  confirmPassword: z
+    .string()
+    .min(6, "Confirm Password must be at least 6 characters."),
+  role: z.enum(["customer", "seller"], "Role is required"),
 });
-
 export function RegisterForm() {
   const form = useForm({
     defaultValues: {
       name: "",
       email: "",
       password: "",
+      role: "",
     },
     validators: {
       onSubmit: registerSchema,
@@ -60,7 +71,7 @@ export function RegisterForm() {
             e.preventDefault();
             form.handleSubmit();
           }}
-          className="space-y-4"
+          className="space-y-3"
         >
           <FieldGroup>
             {/* Name */}
@@ -137,6 +148,37 @@ export function RegisterForm() {
                       aria-invalid={isInvalid}
                       autoComplete="new-password"
                     />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            />
+
+            <form.Field
+              name="role"
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Role</FieldLabel>
+                    <Select
+                      name={field.name}
+                      value={field.state.value}
+                      onValueChange={field.handleChange}
+                      aria-invalid={isInvalid}
+                    >
+                      <SelectTrigger id={field.name}>
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="customer">Customer</SelectItem>
+                        <SelectItem value="seller">Seller</SelectItem>
+                      </SelectContent>
+                    </Select>
+
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
                     )}

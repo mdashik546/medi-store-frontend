@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-import { Logo, LogoText } from "@/components/shadcnblocks/logo";
+import Link from "next/link";
 
 interface MenuItem {
   title: string;
@@ -89,15 +89,11 @@ const Footer = ({
           <div className="grid grid-cols-2 gap-8 lg:grid-cols-6">
             <div className="col-span-2 mb-8 lg:mb-0">
               <div className="flex items-center gap-2 lg:justify-start">
-                <Logo url="https://shadcnblocks.com">
-                  {/* <LogoImage
-                    src={logo.src}
-                    alt={logo.alt}
-                    title={logo.title}
-                    className="h-10 dark:invert"
-                  /> */}
-                  <LogoText className="text-xl">{logo.title}</LogoText>
-                </Logo>
+                <Link href={logo.url}>
+                  <span className="text-lg font-semibold tracking-tighter">
+                    {logo.title}
+                  </span>
+                </Link>
               </div>
               <p className="mt-4 font-bold">{tagline}</p>
             </div>
