@@ -1,9 +1,6 @@
 "use client";
-
 import { Menu } from "lucide-react";
-
 import { cn } from "@/lib/utils";
-
 import { Accordion } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,7 +16,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import Image from "next/image";
 import Link from "next/link";
 
 interface MenuItem {
@@ -42,7 +38,7 @@ interface NavbarProps {
       title: string;
       url: string;
     };
-    signup: {
+    register: {
       title: string;
       url: string;
     };
@@ -55,27 +51,15 @@ const Navbar = ({
     title: "MediStore 💊",
   },
   menu = [
-    { title: "Home", url: "#" },
+    { title: "Home", url: "/" },
     {
-      title: "Products",
-      url: "#",
-    },
-    {
-      title: "Resources",
-      url: "#",
-    },
-    {
-      title: "Pricing",
-      url: "#",
-    },
-    {
-      title: "Blog",
-      url: "#",
+      title: "Shop",
+      url: "/shop",
     },
   ],
   auth = {
     login: { title: "Login", url: "/login" },
-    signup: { title: "Register", url: "/register" },
+    register: { title: "Register", url: "/register" },
   },
   className,
 }: NavbarProps) => {
@@ -84,27 +68,24 @@ const Navbar = ({
       <div className="container">
         {/* Desktop Menu */}
         <nav className="hidden items-center justify-between lg:flex">
-          <div className="flex items-center gap-6">
-            {/* Logo */}
-            <Link href={logo.url}>
-              <span className="text-lg font-semibold tracking-tighter">
-                {logo.title}
-              </span>
-            </Link>
-            <div className="flex items-center">
-              <NavigationMenu>
-                <NavigationMenuList>
-                  {menu.map((item) => renderMenuItem(item))}
-                </NavigationMenuList>
-              </NavigationMenu>
-            </div>
+          <Link href={logo.url}>
+            <span className="text-lg font-semibold tracking-tighter">
+              {logo.title}
+            </span>
+          </Link>
+          <div className="flex items-center">
+            <NavigationMenu>
+              <NavigationMenuList>
+                {menu.map((item) => renderMenuItem(item))}
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-4">
             <Button asChild variant="outline" size="sm">
               <Link href={auth.login.url}>{auth.login.title}</Link>
             </Button>
             <Button asChild size="sm">
-              <Link href={auth.signup.url}>{auth.signup.title}</Link>
+              <Link href={auth.register.url}>{auth.register.title}</Link>
             </Button>
           </div>
         </nav>
@@ -148,7 +129,9 @@ const Navbar = ({
                       <Link href={auth.login.url}>{auth.login.title}</Link>
                     </Button>
                     <Button asChild>
-                      <Link href={auth.signup.url}>{auth.signup.title}</Link>
+                      <Link href={auth.register.url}>
+                        {auth.register.title}
+                      </Link>
                     </Button>
                   </div>
                 </div>
