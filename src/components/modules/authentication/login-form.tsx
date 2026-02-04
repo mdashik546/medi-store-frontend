@@ -1,133 +1,133 @@
 "use client";
-
-import * as React from "react";
-import { useForm } from "@tanstack/react-form";
-import { toast } from "sonner";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
 } from "@/components/ui/card";
+
 import {
   Field,
-  FieldError,
   FieldGroup,
   FieldLabel,
+  FieldError,
 } from "@/components/ui/field";
+
 import { Input } from "@/components/ui/input";
 
-const formSchema = z.object({
-  email: z.email(),
-  password: z.string().min(6, "Password must be at least 6 characters."),
+import { toast } from "sonner";
+import { Spinner } from "@/components/ui/spinner";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+
+const loginSchema = z.object({
+  email: z.email("Invalid email"),
+  password: z.string().min(6, "Minimum 6 characters"),
 });
 
+type LoginInput = z.infer<typeof loginSchema>;
 export function LoginForm() {
-  const form = useForm({
+  const router = useRouter();
+  const form = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
-    validators: {
-      onSubmit: formSchema,
-    },
-    onSubmit: async ({ value }) => {
-      console.log(value);
-    },
   });
 
+  const onSubmit = async (value: LoginInput) => {
+    const toastId = toast.loading("Logging in...");
+    try {
+      const { data, error } = await authClient.signIn.email(value, {
+        credentials: "include",
+      });
+      console.log(data);
+      if (error) {
+        toast.error(error.message, { id: toastId });
+        return;
+      }
+      toast.success("Logged in successfully!", { id: toastId });
+      form.reset();
+      router.push("/");
+    } catch (error) {
+      toast.error("Internal Server Error", { id: toastId });
+    }
+  };
+
+
   return (
-    <Card className="w-full sm:max-w-sm mx-auto mt-10">
-      {/* Header */}
+    <Card className="w-full max-w-sm mx-auto mt-10">
       <CardHeader>
-        <CardTitle>Welcome Back</CardTitle>
-        <CardDescription>Login to your account to continue.</CardDescription>
+        <CardTitle> Welcome Back</CardTitle>
+        <CardDescription>
+          Please enter your email and password to continue
+        </CardDescription>
       </CardHeader>
 
-      {/* Content */}
       <CardContent>
-        <form
-          id="login-form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            form.handleSubmit();
-          }}
-          className="space-y-4"
-        >
+        <form id="login-form" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
-            {/* Email Field */}
-            <form.Field
+            {/* Email */}
+            <Controller
               name="email"
-              children={(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Email</FieldLabel>
-
-                    <Input
-                      type="email"
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={isInvalid}
-                      placeholder="Enter your email"
-                      autoComplete="email"
-                    />
-
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel>Email</FieldLabel>
+                  <Input {...field} placeholder="Enter your email" />
+                  {fieldState.error && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
             />
 
-            {/* Password Field */}
-            <form.Field
+            {/* Password */}
+            <Controller
               name="password"
-              children={(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-
-                    <Input
-                      type="password"
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={isInvalid}
-                      placeholder="Enter your password"
-                      autoComplete="current-password"
-                    />
-
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel>Password</FieldLabel>
+                  <Input
+                    type="password"
+                    {...field}
+                    placeholder="Enter your password"
+                  />
+                  {fieldState.error && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
             />
           </FieldGroup>
         </form>
       </CardContent>
 
-      {/* Footer */}
-      <CardFooter>
-        <Button type="submit" form="login-form" className="w-full">
-          Login
+      <CardFooter className="flex flex-col gap-2">
+        <Button
+          disabled={form.formState.isSubmitting}
+          type="submit"
+          form="login-form"
+          className="w-full"
+        >
+          {form.formState.isSubmitting ? <Spinner /> : "Login"}
         </Button>
+        <div className="text-center text-sm text-muted-foreground">
+          Don't have an account?
+          <Link href="/register" className="text-blue-500 hover:underline">
+            Register
+          </Link>
+        </div>
       </CardFooter>
     </Card>
   );

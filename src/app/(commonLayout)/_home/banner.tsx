@@ -1,7 +1,7 @@
 "use client";
+import Autoplay from "embla-carousel-autoplay";
 
 import * as React from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -10,12 +10,15 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel";
+import Image from "next/image";
 
 export function CarouselBanner() {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
-
+  const plugin = React.useRef(
+    Autoplay({ delay: 4000, stopOnInteraction: false }),
+  );
   React.useEffect(() => {
     if (!api) {
       return;
@@ -28,23 +31,30 @@ export function CarouselBanner() {
       setCurrent(api.selectedScrollSnap() + 1);
     });
   }, [api]);
+  const data = ["/images/banner2.jpg", "/images/banner3.jpg"];
 
   return (
-    <div className="mx-auto w-full max-w-full h-80">
-      <Carousel setApi={setApi} className="h-full">
+    <div className="mx-auto w-full lg:h-105 md:h-80 h-60">
+      <Carousel plugins={[plugin.current]} setApi={setApi} className="h-full">
         <CarouselContent className="h-full">
-          {Array.from({ length: 5 }).map((_, index) => (
-            <CarouselItem key={index} className="h-full">
-              <Card className="m-px h-80">
-                <CardContent className="flex items-center justify-center p-6 h-full">
-                  <span className="text-4xl font-semibold">{index + 1}</span>
-                </CardContent>
-              </Card>
+          {data?.map((item, index) => (
+            <CarouselItem key={index} className="h-full rounded-md">
+              <Image
+                src={item}
+                alt=""
+                width={1920}
+                height={300}
+                className="lg:h-105 md:h-80 h-60 rounded-md"
+              />
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
+        <div className="md:block hidden">
+          <CarouselPrevious />
+        </div>
+        <div className="md:block hidden">
+          <CarouselNext />
+        </div>
       </Carousel>
       <div className="text-muted-foreground py-2 text-center text-sm">
         Slide {current} of {count}

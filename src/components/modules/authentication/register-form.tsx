@@ -1,200 +1,175 @@
 "use client";
-
-import * as React from "react";
-import { useForm } from "@tanstack/react-form";
-import { toast } from "sonner";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
 } from "@/components/ui/card";
+
 import {
   Field,
-  FieldError,
   FieldGroup,
   FieldLabel,
+  FieldError,
 } from "@/components/ui/field";
+
 import { Input } from "@/components/ui/input";
+
 import {
   Select,
-  SelectContent,
-  SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectContent,
+  SelectItem,
 } from "@/components/ui/select";
+import { toast } from "sonner";
+import { Spinner } from "@/components/ui/spinner";
+import { authClient } from "@/lib/auth-client";
+import Link from "next/link";
 
 const registerSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters."),
-  email: z.email("Invalid email address."),
-  password: z.string().min(6, "Password must be at least 6 characters."),
-  confirmPassword: z
-    .string()
-    .min(6, "Confirm Password must be at least 6 characters."),
-  role: z.enum(["customer", "seller"], "Role is required"),
+  name: z.string().min(2, "Name is required"),
+  email: z.email("Invalid email"),
+  password: z.string().min(6, "Minimum 6 characters"),
+  role: z.enum(["CUSTOMER", "SELLER"]),
 });
+
+type RegisterInput = z.infer<typeof registerSchema>;
 export function RegisterForm() {
-  const form = useForm({
+  const form = useForm<RegisterInput>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       name: "",
       email: "",
       password: "",
-      role: "",
-    },
-    validators: {
-      onSubmit: registerSchema,
-    },
-    onSubmit: async ({ value }) => {
-      console.log("Register Data:", value);
-      toast.success("Registration Successful!");
+      role: "CUSTOMER",
     },
   });
 
+  const onSubmit = async (value: RegisterInput) => {
+    const toastId = toast.loading("Creating User...");
+    try {
+      const { error } = await authClient.signUp.email(value);
+      if (error) {
+        toast.error(error.message, { id: toastId });
+        return;
+      }
+      form.reset();
+      toast.success("Form submitted successfully", { id: toastId });
+    } catch (error) {
+      toast.error("Internal Server Error", { id: toastId });
+    }
+  };
+
   return (
-    <Card className="w-full sm:max-w-sm mx-auto mt-10">
-      {/* Header */}
+    <Card className="w-full max-w-sm mx-auto mt-10">
       <CardHeader>
         <CardTitle>Create Account</CardTitle>
-        <CardDescription>Fill in your details to register.</CardDescription>
+        <CardDescription>Fill in your details to register</CardDescription>
       </CardHeader>
 
-      {/* Content */}
       <CardContent>
-        <form
-          id="register-form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            form.handleSubmit();
-          }}
-          className="space-y-3"
-        >
+        <form id="register-form" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
             {/* Name */}
-            <form.Field
+            <Controller
               name="name"
-              children={(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Full Name</FieldLabel>
-                    <Input
-                      type="text"
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="Enter your full name"
-                      aria-invalid={isInvalid}
-                      autoComplete="name"
-                    />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel>Name</FieldLabel>
+                  <Input {...field} placeholder="Enter your name" />
+                  {fieldState.error && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
             />
+
             {/* Email */}
-            <form.Field
+            <Controller
               name="email"
-              children={(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Email</FieldLabel>
-                    <Input
-                      type="email"
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="Enter your email"
-                      aria-invalid={isInvalid}
-                      autoComplete="email"
-                    />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel>Email</FieldLabel>
+                  <Input {...field} placeholder="Enter your email" />
+                  {fieldState.error && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
             />
+
             {/* Password */}
-            <form.Field
+            <Controller
               name="password"
-              children={(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                    <Input
-                      type="password"
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="Enter your password"
-                      aria-invalid={isInvalid}
-                      autoComplete="new-password"
-                    />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel>Password</FieldLabel>
+                  <Input
+                    type="password"
+                    {...field}
+                    placeholder="Enter your password"
+                  />
+                  {fieldState.error && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
             />
 
-            <form.Field
+            {/* Role */}
+            <Controller
               name="role"
-              children={(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Role</FieldLabel>
-                    <Select
-                      name={field.name}
-                      value={field.state.value}
-                      onValueChange={field.handleChange}
-                      aria-invalid={isInvalid}
-                    >
-                      <SelectTrigger id={field.name}>
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="customer">Customer</SelectItem>
-                        <SelectItem value="seller">Seller</SelectItem>
-                      </SelectContent>
-                    </Select>
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel>Role</FieldLabel>
 
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select role" />
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      <SelectItem value="CUSTOMER">Customer</SelectItem>
+                      <SelectItem value="SELLER">Seller</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  {fieldState.error && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
             />
           </FieldGroup>
         </form>
       </CardContent>
 
-      {/* Footer */}
-      <CardFooter>
-        <Button type="submit" form="register-form" className="w-full">
-          Register
+      <CardFooter className="flex flex-col gap-2">
+        <Button
+          disabled={form.formState.isSubmitting}
+          type="submit"
+          form="register-form"
+          className="w-full"
+        >
+          {form.formState.isSubmitting ? <Spinner /> : "Register"}
         </Button>
+        <div className="text-center text-sm text-muted-foreground">
+          Already have an account?
+          <Link href="/login" className="text-blue-500 hover:underline">
+            Login
+          </Link>
+        </div>
       </CardFooter>
     </Card>
   );
