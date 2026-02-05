@@ -9,7 +9,6 @@ export async function proxy(request: NextRequest) {
   const isAuthenticated = !!session;
   const isAdmin = response?.user?.role === Roles.admin;
   const isSeller = response?.user?.role === Roles.seller;
-  console.log(response?.user?.role);
 
   if (
     !isAuthenticated &&

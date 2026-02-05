@@ -1,6 +1,8 @@
 "use server";
 import { env } from "@/env";
-type Method = "GET" | "POST" | "UPDATE" | "DELETE";
+import { cookies } from "next/headers";
+
+type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 interface FetcherOption {
   method?: Method;
@@ -8,32 +10,39 @@ interface FetcherOption {
   headers?: HeadersInit;
   cache?: RequestCache;
   revalidate?: number;
+  tags?: string[];
 }
+
 export const fetcher = async (
   endPoint: string,
   options: FetcherOption = {},
 ) => {
-  try {
-    const { method = "GET", body, headers, cache, revalidate } = options;
+  const { method = "GET", body, headers, cache, revalidate,tags } = options;
 
-    const res = await fetch(`${env.API_BASE_URL}/${endPoint}`, {
+  try {
+    const cookieStore = await cookies();
+    const res = await fetch(`${env.API_BASE_URL}${endPoint}`, {
       method,
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
         ...headers,
+        Cookie: cookieStore.toString(),
       },
-
       body: body ? JSON.stringify(body) : undefined,
       cache,
-      next: revalidate ? { revalidate } : undefined,
+      next: revalidate || tags ? { revalidate, tags } : undefined,
     });
+
     if (!res.ok) {
       const errorData = await res.json();
+      console.log("API Error:", errorData.message);
       throw new Error(errorData.message);
     }
+
     return await res.json();
   } catch (error) {
+    console.error("Fetcher Error:", error);
     throw error;
   }
 };
