@@ -8,8 +8,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { User } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { CircleUser } from "lucide-react";
 export function ProfileDialog({ user }: { user: any }) {
   return (
     <DropdownMenu>
@@ -24,7 +24,7 @@ export function ProfileDialog({ user }: { user: any }) {
               className="rounded-full"
             />
           ) : (
-            <User size={18} />
+            <CircleUser size={18} />
           )}
         </Button>
       </DropdownMenuTrigger>

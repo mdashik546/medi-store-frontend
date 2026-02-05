@@ -1,46 +1,78 @@
 import { NextResponse, NextRequest } from "next/server";
 import { userService } from "./services/user.service";
 import { Roles } from "./constants/roles";
-
+const PROTECTED_ROUTES = {
+  admin: ["/admin/dashboard"],
+  seller: ["/seller/dashboard", "/seller/medicines", "/seller/orders"],
+  customer: ["/cart", "/orders"],
+  authenticated: [
+    "/admin/dashboard",
+    "/seller/dashboard",
+    "/seller/medicines",
+    "/seller/orders",
+    "/cart",
+    "/orders",
+  ],
+  public: ["/login", "/register"],
+};
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-  const response = await userService.getSession();
-  const session = response?.session ?? null;
+  const { session, user } = await userService.getSession();
   const isAuthenticated = !!session;
-  const isAdmin = response?.user?.role === Roles.admin;
-  const isSeller = response?.user?.role === Roles.seller;
+  const userRole = user?.role;
 
-  if (
-    !isAuthenticated &&
-    (pathname.startsWith("/dashboard") ||
-      pathname.startsWith("/admin-dashboard") ||
-      pathname.startsWith("/medicine"))
-  ) {
+  if (!isAuthenticated && isProtectedRoute(pathname)) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
-  if (isAuthenticated && !isSeller && pathname.startsWith("/medicine")) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-  if (isAuthenticated && (pathname === "/login" || pathname === "/register")) {
+
+  if (isAuthenticated && isAuthPage(pathname)) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  if (isAdmin && pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/isAdmin-dashboard", request.url));
+  if (isAuthenticated && userRole !== Roles.customer && isCustomerRoute(pathname)) {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
-  if (!isAdmin && pathname.startsWith("/admin-dashboard")) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+
+  if (isAuthenticated && userRole !== Roles.seller && isSellerRoute(pathname)) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  if (isAuthenticated && userRole !== Roles.admin && isAdminRoute(pathname)) {
+    return NextResponse.redirect(new URL("/seller/dashboard", request.url));
   }
 
   return NextResponse.next();
 }
+function isProtectedRoute(pathname: string): boolean {
+  return PROTECTED_ROUTES.authenticated.some((route) =>
+    pathname.startsWith(route),
+  );
+}
+
+function isAuthPage(pathname: string): boolean {
+  return PROTECTED_ROUTES.public.some((route) => pathname === route);
+}
+
+function isAdminRoute(pathname: string): boolean {
+  return PROTECTED_ROUTES.admin.some((route) => pathname.startsWith(route));
+}
+
+function isSellerRoute(pathname: string): boolean {
+  return PROTECTED_ROUTES.seller.some((route) => pathname.startsWith(route));
+}
+function isCustomerRoute(pathname: string): boolean {
+  return PROTECTED_ROUTES.customer.some((route) => pathname.startsWith(route));
+}
 
 export const config = {
   matcher: [
-    "/dashboard/:path*",
-    "/admin-dashboard/:path*",
+    "/admin/dashboard/:path*",
     "/login",
     "/register",
-    "/medicine",
+    "/orders",
+    "/cart",
+    "/seller/dashboard/:path*",
+    "/seller/medicines",
+    "/seller/orders",
   ],
 };
