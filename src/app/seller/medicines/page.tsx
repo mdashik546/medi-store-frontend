@@ -1,9 +1,9 @@
 import { fetcher } from "@/lib/fetcher";
-import Medicine from "./_components/medicine";
+import MedicineTable from "./_components/medicine-table";
 
 const Page = async () => {
   const { data } = await fetcher("/seller/medicines", { tags: ["medicine"] });
-  return <Medicine data={data} />;
+  return <MedicineTable data={data} />;
 };
 
 export default Page;

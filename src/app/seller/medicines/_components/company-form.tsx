@@ -6,6 +6,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import { medicineService } from "@/services/medicine.service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -32,7 +33,6 @@ const CompanyForm = () => {
     const toastId = toast.loading("Creating company...");
     try {
       const resCompany = await medicineService.createCompany(value);
-
       toast.success(resCompany.message, { id: toastId });
       setCompanyAdded(true);
     } catch (error: any) {
@@ -60,7 +60,7 @@ const CompanyForm = () => {
                   )}
 
                   <Button type="submit" className="mt-2 w-full">
-                    Add Company
+                    {form.formState.isSubmitting ? <Spinner /> : "Add Company"}
                   </Button>
                 </Field>
               )}

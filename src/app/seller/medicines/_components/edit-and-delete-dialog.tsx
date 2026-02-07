@@ -3,13 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useDeleteAlert } from "@/lib/use-delete";
-import { MedicineDialog } from "./dialog-and-form";
+import { MedicineForm } from "./medicine-form";
 
-export const MedicineActions = ({ id }: { id: string }) => {
+export const EditAndDeleteDialog = ({ item }: any) => {
   const { handleDelete } = useDeleteAlert();
-  const handleEdit = () => {
-    console.log("Edit ID:", id);
-  };
 
   return (
     <div className="flex justify-center gap-2">
@@ -19,11 +16,12 @@ export const MedicineActions = ({ id }: { id: string }) => {
         </DialogTrigger>
 
         <DialogContent className="sm:max-w-md">
+          <MedicineForm item={item} />
         </DialogContent>
       </Dialog>
       <Button
         variant="destructive"
-        onClick={() => handleDelete(`/seller/medicines/${id}`, "medicine")}
+        onClick={() => handleDelete(`/seller/medicines/${item.id}`, "medicine")}
       >
         Delete
       </Button>

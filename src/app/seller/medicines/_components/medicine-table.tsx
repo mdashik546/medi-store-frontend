@@ -7,12 +7,11 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import { MedicineDialog } from "./dialog-and-form";
-import { MedicineActions } from "./medicine-actions";
+import { MedicineDialog } from "./add-dialog";
+import { EditAndDeleteDialog } from "./edit-and-delete-dialog";
+import Image from "next/image";
 
-export default function Medicine({ data }: { data: any }) {
-  console.log(data);
-
+export default function MedicineTable({ data }: { data: any }) {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
@@ -46,7 +45,14 @@ export default function Medicine({ data }: { data: any }) {
                   {data?.map((item: any) => (
                     <TableRow key={item.id}>
                       <TableCell>{item?.name}</TableCell>
-                      <TableCell>{item?.name}</TableCell>
+                      <TableCell>
+                        <Image
+                          src={item?.imageURL}
+                          alt=""
+                          width={40}
+                          height={40}
+                        />
+                      </TableCell>
                       <TableCell>{item.price}</TableCell>
                       <TableCell>
                         {item.description ? (
@@ -59,7 +65,7 @@ export default function Medicine({ data }: { data: any }) {
                       <TableCell>{item?.status}</TableCell>
                       <TableCell>{item?.expiryDate}</TableCell>
                       <TableCell className="space-x-3 text-center">
-                        <MedicineActions id={item?.id} />
+                        <EditAndDeleteDialog item={item} />
                       </TableCell>
                     </TableRow>
                   ))}
