@@ -1,11 +1,20 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Medicine } from "@/types/medicine";
 import Image from "next/image";
 
-const MedicineDetails = ({ medicine }: { medicine: Medicine }) => {
+import AddToCart from "./add-to-cart";
+
+const MedicineDetails = ({
+  medicine,
+  session,
+  cartItems,
+}: {
+  medicine: Medicine;
+  session: any;
+  cartItems: any;
+}) => {
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
       <div className="grid md:grid-cols-2 gap-10">
@@ -44,8 +53,11 @@ const MedicineDetails = ({ medicine }: { medicine: Medicine }) => {
           <p className="text-muted-foreground">
             {medicine.description || "No description available."}
           </p>
-
-          <Button className="w-full">Add To Cart</Button>
+          <AddToCart
+            session={session}
+            medicine={medicine}
+            cartItems={cartItems}
+          />
         </div>
       </div>
     </div>

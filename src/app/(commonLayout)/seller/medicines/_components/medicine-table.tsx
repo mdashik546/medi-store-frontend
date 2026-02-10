@@ -24,13 +24,14 @@ export default function MedicineTable({ data }: { data: any }) {
           <CardTitle>All Medicines</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
+          <Table className="table-fixed w-full">
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">id</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Image</TableHead>
                 <TableHead>Price</TableHead>
-                <TableHead>Description</TableHead>
+                <TableHead className="w-70">Description</TableHead>
                 <TableHead>Stock</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="w-48">Expiry Date</TableHead>
@@ -42,8 +43,11 @@ export default function MedicineTable({ data }: { data: any }) {
             <TableBody>
               {data?.length > 0 ? (
                 <>
-                  {data?.map((item: any) => (
+                  {data?.map((item: any, index: number) => (
                     <TableRow key={item.id}>
+                      <TableCell className="w-12">
+                        {data.length - index}
+                      </TableCell>
                       <TableCell>{item?.name}</TableCell>
                       <TableCell>
                         <Image
@@ -54,7 +58,7 @@ export default function MedicineTable({ data }: { data: any }) {
                         />
                       </TableCell>
                       <TableCell>{item.price}</TableCell>
-                      <TableCell>
+                      <TableCell className="whitespace-normal wrap-break-word">
                         {item.description ? (
                           <span>{item.description}</span>
                         ) : (

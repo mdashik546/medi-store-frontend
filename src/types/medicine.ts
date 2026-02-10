@@ -1,7 +1,7 @@
 export type Medicine = {
   id: string;
   name: string;
-  description: string | null;
+  description?: string | null;
   price: number;
   stock: number;
   expiryDate: string;

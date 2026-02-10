@@ -12,7 +12,7 @@ import Link from "next/link";
 
 export function MedicineCard({ medicine }: { medicine: Medicine }) {
   return (
-    <Card className="hover:shadow-md transition p-0">
+    <Card className="hover:shadow-md transition p-0 mt-8">
       <CardHeader className="p-0">
         <img
           src={medicine.imageURL || "https://avatar.vercel.sh/shadcn"}

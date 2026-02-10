@@ -1,5 +1,8 @@
 "use client";
-import { medicineAction } from "@/actions/medicine.action";
+import {
+  addMedicineAction,
+  updateMedicineAction,
+} from "@/actions/medicine.action";
 import { Button } from "@/components/ui/button";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import {
@@ -10,7 +13,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { medicineService } from "@/services/medicine.service";
+import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -20,9 +23,14 @@ const medicineSchema = z.object({
   name: z.string().min(2, "Medicine name required"),
   price: z.number().min(1),
   stock: z.number().min(1),
+  description: z
+    .string()
+    .min(20, "Description must be at least 20 characters")
+    .or(z.literal(""))
+    .optional(),
   categoryId: z.string().optional(),
-  expiryDate: z.string(),
-  imageURL: z.any(),
+  expiryDate: z.string().min(1, "Expiry date is required"),
+  imageURL: z.string().min(1),
 });
 
 type MedicineInput = z.infer<typeof medicineSchema>;
@@ -34,6 +42,7 @@ export const MedicineForm = ({ item }: any) => {
       price: item?.price || 0,
       stock: item?.stock || 0,
       categoryId: item?.categoryId || "",
+      description: item?.description || "",
       expiryDate: item?.expiryDate || "",
       imageURL: item?.imageURL || null,
     },
@@ -44,10 +53,10 @@ export const MedicineForm = ({ item }: any) => {
     try {
       let response;
       if (item?.id) {
-        response = await medicineService.updateCompany(item.id, value);
+        response = await updateMedicineAction(item.id, value);
         console.log(response);
       } else {
-        response = await medicineAction(value);
+        response = await addMedicineAction(value);
       }
       toast.success(response?.message, { id: toastId });
       form.reset();
@@ -116,10 +125,13 @@ export const MedicineForm = ({ item }: any) => {
             <Controller
               name="expiryDate"
               control={form.control}
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <Field>
                   <FieldLabel>Expiry Date</FieldLabel>
                   <Input type="date" {...field} />
+                  {fieldState.error && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
                 </Field>
               )}
             />
@@ -128,7 +140,7 @@ export const MedicineForm = ({ item }: any) => {
             <Controller
               name="imageURL"
               control={form.control}
-              render={({ field }) => {
+              render={({ field, fieldState }) => {
                 const inputRef = useRef<HTMLInputElement>(null);
                 useEffect(() => {
                   if (!field.value && inputRef.current) {
@@ -148,27 +160,43 @@ export const MedicineForm = ({ item }: any) => {
                         field.onChange(file ? URL.createObjectURL(file) : null);
                       }}
                     />
+                    {fieldState.error && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
                   </Field>
                 );
               }}
             />
           </>
         )}
+        <Controller
+          name="description"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field>
+              <FieldLabel>Description</FieldLabel>
+              <Textarea {...field} />
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
       </FieldGroup>
 
-      <DialogFooter className="flex">
+      <DialogFooter >
         <DialogClose asChild>
-          <Button variant="outline" className="w-1/2">
+          <Button variant="outline" className="sm:w-1/2">
             Cancel
           </Button>
         </DialogClose>
-        <Button type="submit" className="w-1/2">
-          {form.formState.isSubmitting ? (
-            <Spinner />
-          ) : (
-            <span>{item?.id ? "Update" : "Add"}</span>
-          )}
-        </Button>
+        <DialogClose asChild>
+          <Button type="submit" className="sm:w-1/2">
+            {form.formState.isSubmitting ? (
+              <Spinner />
+            ) : (
+              <span>{item?.id ? "Update" : "Add"}</span>
+            )}
+          </Button>
+        </DialogClose>
       </DialogFooter>
     </form>
   );

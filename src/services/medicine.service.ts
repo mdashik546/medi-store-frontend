@@ -9,12 +9,4 @@ export const medicineService = {
 
     return await res;
   },
-  updateCompany: async function (id: string, value: any) {
-    const res = await fetcher(`/seller/medicines/${id}`, {
-      method: "PATCH",
-      body: value,
-    });
-
-    return await res;
-  },
 };

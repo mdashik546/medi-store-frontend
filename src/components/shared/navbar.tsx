@@ -16,51 +16,53 @@ export default function Navbar() {
   const links = menu_data[role];
 
   return (
-    <nav className="border-b">
-      <div className="container mx-auto flex h-14 items-center justify-between px-4">
-        {/* Logo */}
-        <Link href="/" className="font-bold text-lg">
-          MediShop
-        </Link>
-        {/* Desktop Menu */}
-        <div className="hidden md:flex gap-6 items-center">
+    <div className="relative mb-20">
+      <nav className="fixed top-0 h-14 z-50 bg-white container mx-auto border-b">
+        <div className="flex h-14 items-center justify-between px-4">
+          {/* Logo */}
+          <Link href="/" className="font-bold text-lg">
+            MediShop💊
+          </Link>
+          {/* Desktop Menu */}
+          <div className="hidden md:flex gap-6 items-center">
+            {isPending ? (
+              <div className="flex items-center gap-2">
+                <Spinner />
+              </div>
+            ) : (
+              <Render pathname={pathname} links={links} />
+            )}
+          </div>
+          {/* Right Side */}
           {isPending ? (
             <div className="flex items-center gap-2">
               <Spinner />
             </div>
           ) : (
-            <Render pathname={pathname} links={links} />
-          )}
-        </div>
-        {/* Right Side */}
-        {isPending ? (
-          <div className="flex items-center gap-2">
-            <Spinner />
-          </div>
-        ) : (
-          <div className="hidden md:flex items-center gap-3">
-            <AuthSection data={data} isPending={isPending} />
-          </div>
-        )}
-        {/* Mobile Menu */}
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button size="icon" variant="ghost" className="md:hidden">
-              <Menu className="h-5 w-5" />
-            </Button>
-          </SheetTrigger>
-
-          <SheetContent side="left" className="w-64">
-            <div className="flex flex-col gap-4 mt-6 px-5">
-              <Render pathname={pathname} links={links} />
-              <hr />
-
+            <div className="hidden md:flex items-center gap-3">
               <AuthSection data={data} isPending={isPending} />
             </div>
-          </SheetContent>
-        </Sheet>
-      </div>
-    </nav>
+          )}
+          {/* Mobile Menu */}
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button size="icon" variant="ghost" className="md:hidden">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+
+            <SheetContent side="left" className="w-64">
+              <div className="flex flex-col gap-4 mt-6 px-5">
+                <Render pathname={pathname} links={links} />
+                <hr />
+
+                <AuthSection data={data} isPending={isPending} />
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </nav>
+    </div>
   );
 }
 function Render({ links, pathname }: any) {
