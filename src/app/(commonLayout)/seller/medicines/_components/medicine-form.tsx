@@ -53,7 +53,7 @@ export const MedicineForm = ({ item }: any) => {
     try {
       let response;
       if (item?.id) {
-        response = await updateMedicineAction(item.id, value);
+        response = await updateMedicineAction(item?.id, value);
         console.log(response);
       } else {
         response = await addMedicineAction(value);
@@ -182,21 +182,19 @@ export const MedicineForm = ({ item }: any) => {
         />
       </FieldGroup>
 
-      <DialogFooter >
+      <DialogFooter>
         <DialogClose asChild>
           <Button variant="outline" className="sm:w-1/2">
             Cancel
           </Button>
         </DialogClose>
-        <DialogClose asChild>
-          <Button type="submit" className="sm:w-1/2">
-            {form.formState.isSubmitting ? (
-              <Spinner />
-            ) : (
-              <span>{item?.id ? "Update" : "Add"}</span>
-            )}
-          </Button>
-        </DialogClose>
+        <Button type="submit" className="sm:w-1/2">
+          {form.formState.isSubmitting ? (
+            <Spinner />
+          ) : (
+            <span>{item?.id ? "Update" : "Add"}</span>
+          )}
+        </Button>
       </DialogFooter>
     </form>
   );
