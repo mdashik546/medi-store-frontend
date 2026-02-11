@@ -76,7 +76,7 @@ const Footer = ({
       ],
     },
   ],
-  copyright = "© 2024 medistore.com. All rights reserved.",
+  copyright = "© 2026 medistore.com. All rights reserved.",
   bottomLinks = [
     { text: "Terms and Conditions", url: "#" },
     { text: "Privacy Policy", url: "#" },

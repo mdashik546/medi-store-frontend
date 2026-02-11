@@ -13,6 +13,7 @@ export const menu_data: Record<string, NavItem[]> = {
     { label: "Home", href: "/" },
     { label: "Shop", href: "/shop" },
     { label: "Cart", href: "/cart" },
+    { label: "Checkout", href: "/checkout" },
     { label: "Orders", href: "/orders" },
   ],
 

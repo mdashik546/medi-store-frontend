@@ -52,7 +52,12 @@ const CartDesign = ({ cartItems }: any) => {
             {cartItems?.length || 0} items
           </p>
         </div>
-        <Button variant={"destructive"} size="sm" onClick={handleDeleteAllCart}>
+        <Button
+          disabled={cartItems?.length === 0}
+          variant={"destructive"}
+          size="sm"
+          onClick={handleDeleteAllCart}
+        >
           {loading ? <Spinner /> : "Clear All"}
         </Button>
       </div>

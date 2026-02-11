@@ -4,7 +4,7 @@ import { Roles } from "./constants/roles";
 const PROTECTED_ROUTES = {
   admin: ["/admin/dashboard"],
   seller: ["/seller/dashboard", "/seller/medicines", "/seller/orders"],
-  customer: ["/cart", "/orders"],
+  customer: ["/cart", "/orders","/checkout"],
   authenticated: [
     "/admin/dashboard",
     "/seller/dashboard",
@@ -12,6 +12,7 @@ const PROTECTED_ROUTES = {
     "/seller/orders",
     "/cart",
     "/orders",
+    "/checkout",
   ],
   public: ["/login", "/register"],
 };
@@ -69,7 +70,7 @@ export const config = {
     "/admin/dashboard/:path*",
     "/login",
     "/register",
-    "/orders",
+    "/orders/:path*",
     "/cart",
     "/seller/dashboard/:path*",
     "/seller/medicines",

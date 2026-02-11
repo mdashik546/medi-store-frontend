@@ -47,7 +47,7 @@ export function LoginForm() {
   const onSubmit = async (value: LoginInput) => {
     const toastId = toast.loading("Logging in...");
     try {
-      const { data, error } = await authClient.signIn.email(value, {
+      const {  error } = await authClient.signIn.email(value, {
         credentials: "include",
       });
       if (error) {

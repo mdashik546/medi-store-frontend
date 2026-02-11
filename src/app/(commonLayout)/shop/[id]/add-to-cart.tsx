@@ -7,7 +7,6 @@ import {
   SheetContent,
   SheetFooter,
   SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useState } from "react";
@@ -15,7 +14,7 @@ import { toast } from "sonner";
 import { addToCartAction } from "@/actions/cart.action";
 import CartDesign from "@/components/cart-design";
 
-const AddToCart = ({ session, medicine, cartItems, singleCartDelete }: any) => {
+const AddToCart = ({ session, medicine, cartItems }: any) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const handleAddToCart = async () => {
@@ -28,9 +27,10 @@ const AddToCart = ({ session, medicine, cartItems, singleCartDelete }: any) => {
         return;
       }
       toast.success(res?.message, { id: toastId });
-      setLoading(false);
     } catch (error) {
       toast.error("Internal Server Error", { id: toastId });
+    } finally {
+      setLoading(false);
     }
   };
 
