@@ -43,8 +43,8 @@ export default function MedicineTable({ data }: { data: any }) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data && data.length > 0 ? (
-                  data.map((item: any, index: number) => (
+                {data && data?.length > 0 ? (
+                  data?.map((item: any, index: number) => (
                     <TableRow key={item.id}>
                       <TableCell className="w-12">
                         {data.length - index}

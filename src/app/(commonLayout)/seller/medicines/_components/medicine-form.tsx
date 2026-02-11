@@ -35,18 +35,35 @@ const medicineSchema = z.object({
 
 type MedicineInput = z.infer<typeof medicineSchema>;
 export const MedicineForm = ({ item }: any) => {
+  console.log(item);
   const form = useForm<MedicineInput>({
     resolver: zodResolver(medicineSchema),
     defaultValues: {
-      name: item?.name || "",
-      price: item?.price || 0,
-      stock: item?.stock || 0,
-      categoryId: item?.categoryId || "",
-      description: item?.description || "",
-      expiryDate: item?.expiryDate || "",
-      imageURL: item?.imageURL || null,
+      name: "",
+      price: 0,
+      stock: 0,
+      categoryId: "",
+      description: "",
+      expiryDate: "",
+      imageURL: undefined,
     },
   });
+
+  useEffect(() => {
+    if (item) {
+      form.reset({
+        name: item.name || "",
+        price: item.price || 0,
+        stock: item.stock || 0,
+        categoryId: item.categoryId || "",
+        description: item.description || "",
+        expiryDate: item.expiryDate || undefined,
+        imageURL: item.imageURL || undefined,
+      });
+    } else {
+      form.reset();
+    }
+  }, [item, form]);
 
   const onSubmit = async (value: MedicineInput) => {
     const toastId = toast.loading(item?.id ? "Updating..." : "Creating...");
@@ -54,7 +71,6 @@ export const MedicineForm = ({ item }: any) => {
       let response;
       if (item?.id) {
         response = await updateMedicineAction(item?.id, value);
-        console.log(response);
       } else {
         response = await addMedicineAction(value);
       }
