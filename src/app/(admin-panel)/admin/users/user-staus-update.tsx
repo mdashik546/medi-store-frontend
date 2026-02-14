@@ -13,32 +13,29 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { OrderStatus, orderStatus } from "@/types/order-status";
 import { sellerAction } from "@/actions/seller.action";
 import { Spinner } from "@/components/ui/spinner";
-const allowedNextStatus: Record<OrderStatus, OrderStatus[]> = {
-  PLACED: ["PROCESSING"],
-  PROCESSING: ["SHIPPED"],
-  SHIPPED: ["DELIVERED"],
-  DELIVERED: [],
-  CANCELLED: [],
-};
+import { updateStatusAction } from "@/actions/admin.action";
+
+const userStatus = ["ACTIVE", "INACTIVE"] as const;
+export type UserStatus = (typeof userStatus)[number];
+
 const statusSchema = z.object({
-  status: z.enum(orderStatus),
+  status: z.enum(userStatus),
 });
 
 type StatusForm = z.infer<typeof statusSchema>;
-type Order = {
+type User = {
   id: string;
-  orderStatus: OrderStatus;
+  status: UserStatus;
 };
-export default function OrderStatusChange({ order }: { order: Order }) {
+export default function UserStatusUpdate({ user }: { user: User }) {
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<StatusForm>({
     resolver: zodResolver(statusSchema),
     defaultValues: {
-      status: order.orderStatus,
+      status: user?.status,
     },
   });
 
@@ -48,9 +45,10 @@ export default function OrderStatusChange({ order }: { order: Order }) {
     startTransition(async () => {
       const toastId = toast.loading("Updating status...");
       try {
-        const res = await sellerAction(order?.id, newStatus);
+        const res = await updateStatusAction(user?.id, newStatus);
+        console.log(res);
 
-        toast.success(res?.message || "Status updated", {
+        toast.success("Status updated", {
           id: toastId,
         });
       } catch (error) {
@@ -61,7 +59,6 @@ export default function OrderStatusChange({ order }: { order: Order }) {
       }
     });
   };
-  const currentStatus = form.getValues("status") || order?.orderStatus;
 
   return (
     <Form {...form}>
@@ -70,11 +67,11 @@ export default function OrderStatusChange({ order }: { order: Order }) {
           control={form.control}
           name="status"
           render={({ field }) => (
-            <FormItem className="w-36">
+            <FormItem className="w-28">
               <FormControl>
                 <Select
                   value={field.value}
-                  onValueChange={(value: OrderStatus) => {
+                  onValueChange={(value: UserStatus) => {
                     field.onChange(value);
                     handleChange(value);
                   }}
@@ -91,16 +88,8 @@ export default function OrderStatusChange({ order }: { order: Order }) {
                   </SelectTrigger>
 
                   <SelectContent>
-                    {orderStatus?.map((status) => (
-                      <SelectItem
-                        key={status}
-                        value={status}
-                        disabled={
-                          status === "PLACED" ||
-                          status === "CANCELLED" ||
-                          !allowedNextStatus[currentStatus]?.includes(status)
-                        }
-                      >
+                    {userStatus?.map((status) => (
+                      <SelectItem key={status} value={status}>
                         {status}
                       </SelectItem>
                     ))}

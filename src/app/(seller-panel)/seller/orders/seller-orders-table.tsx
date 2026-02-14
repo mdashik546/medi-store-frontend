@@ -40,6 +40,7 @@ export default function SellerOrders({ ordersData }: { ordersData: Order[] }) {
               <TableHead>Customer</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>address</TableHead>
               <TableHead>Action</TableHead>
             </TableRow>
           </TableHeader>
@@ -54,6 +55,7 @@ export default function SellerOrders({ ordersData }: { ordersData: Order[] }) {
                 <TableCell>{order?.author?.name}</TableCell>
 
                 <TableCell>৳ {order.total}</TableCell>
+                <TableCell>৳ {order.address}</TableCell>
 
                 <TableCell>
                   <span

@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getStatusColor } from "@/components/get-status-color";
-import { Order } from "../../orders/seller-orders";
+import { Order } from "../../orders/seller-orders-table";
 
 const LatestOrder = ({ orderData }: { orderData: Order[] }) => {
   return (

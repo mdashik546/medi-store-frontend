@@ -1,5 +1,5 @@
 import { fetcher } from "@/lib/fetcher";
-import SellerOrders from "./seller-orders";
+import SellerOrders from "./seller-orders-table";
 
 const OrderPage = async () => {
   const { data } = await fetcher(`/seller/orders`, { tags: ["sellerOrder"] });

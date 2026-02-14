@@ -35,7 +35,6 @@ const medicineSchema = z.object({
 
 type MedicineInput = z.infer<typeof medicineSchema>;
 export const MedicineForm = ({ item }: any) => {
-  console.log(item);
   const form = useForm<MedicineInput>({
     resolver: zodResolver(medicineSchema),
     defaultValues: {
@@ -77,7 +76,6 @@ export const MedicineForm = ({ item }: any) => {
       toast.success(response?.message, { id: toastId });
       form.reset();
     } catch (error: any) {
-      console.error(error);
       toast.error(error?.message || "Something went wrong!!", {
         id: toastId,
       });

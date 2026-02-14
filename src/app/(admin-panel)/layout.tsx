@@ -2,13 +2,12 @@ import SellerAdminSidebar from "@/components/seller-admin-sidebar";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const navItems = [
-    { label: "Dashboard", href: "/seller/dashboard" },
-    { label: "Inventory", href: "/seller/medicines" },
-    { label: "Orders", href: "/seller/orders" },
+    { label: "Dashboard", href: "/admin/dashboard" },
+    { label: "Users", href: "/admin/users" },
   ];
   return (
     <div className="flex lg:flex-row flex-col gap-5">
-      <SellerAdminSidebar navItems={navItems} heading="Seller" />
+      <SellerAdminSidebar navItems={navItems} heading="Admin" />
       <div className="w-full pr-5">{children}</div>
     </div>
   );

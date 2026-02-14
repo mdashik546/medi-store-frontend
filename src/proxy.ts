@@ -2,11 +2,12 @@ import { NextResponse, NextRequest } from "next/server";
 import { userService } from "./services/user.service";
 import { Roles } from "./constants/roles";
 const PROTECTED_ROUTES = {
-  admin: ["/admin/dashboard"],
+  admin: ["/admin/dashboard", "/admin/users"],
   seller: ["/seller/dashboard", "/seller/medicines", "/seller/orders"],
-  customer: ["/cart", "/orders","/checkout"],
+  customer: ["/cart", "/orders", "/checkout"],
   authenticated: [
     "/admin/dashboard",
+    "/admin/users",
     "/seller/dashboard",
     "/seller/medicines",
     "/seller/orders",
@@ -30,7 +31,11 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  if (isAuthenticated && userRole !== Roles.customer && isCustomerRoute(pathname)) {
+  if (
+    isAuthenticated &&
+    userRole !== Roles.customer &&
+    isCustomerRoute(pathname)
+  ) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 

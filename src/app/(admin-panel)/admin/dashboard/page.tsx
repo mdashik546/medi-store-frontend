@@ -1,10 +1,8 @@
+import { fetcher } from "@/lib/fetcher";
+import AdminDashboar from "./admin-dashboar";
 
-const AdminDashboardPage = () => {
-  return (
-    <div>
-      
-    </div>
-  );
-};
-
-export default AdminDashboardPage;
+export default async function AdminPage() {
+  const { data } = await fetcher("/admin/users");
+  const orderData = await fetcher("/admin/users/orders");
+  return <AdminDashboar data={data} orderData={orderData?.data} />;
+}

@@ -5,14 +5,17 @@ import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { useState } from "react";
 
-export default function SellerSidebar() {
+export default function SellerAdminSidebar({
+  heading,
+  navItems,
+}: {
+  heading: string;
+  navItems: {
+    label: string;
+    href: string;
+  }[];
+}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const navItems = [
-    { label: "Dashboard", href: "/seller/dashboard" },
-    { label: "Inventory", href: "/seller/medicines" },
-    { label: "Orders", href: "/seller/orders" },
-  ];
 
   return (
     <div className="lg:min-h-screen">
@@ -20,7 +23,7 @@ export default function SellerSidebar() {
         <aside>
           <div className="p-6 border-b border-border">
             <Link href={"/"} className="text-xl font-bold text-foreground">
-              Seller Panel
+              {heading} Panel
             </Link>
           </div>
           <nav className="flex flex-col gap-1 p-4 flex-1">
@@ -41,7 +44,9 @@ export default function SellerSidebar() {
       <main className="flex-1 flex flex-col">
         <div className="lg:hidden bg-card border-b border-border sticky top-0 z-50">
           <div className="flex items-center justify-between p-4">
-            <h2 className="text-lg font-bold text-foreground">Seller Panel</h2>
+            <h2 className="text-lg font-bold text-foreground">
+              {heading} Panel
+            </h2>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 hover:bg-muted rounded-md transition-colors"

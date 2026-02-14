@@ -40,7 +40,6 @@ const CheckoutForm = () => {
       form.reset();
       toast.success(res?.message, { id: toastId });
     } catch (error) {
-      console.log(error);
       toast.error("Internal Server Error", { id: toastId });
     }
   };
