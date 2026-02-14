@@ -17,11 +17,7 @@ export const menu_data: Record<string, NavItem[]> = {
     { label: "Orders", href: "/orders" },
   ],
 
-  SELLER: [
-    { label: "Dashboard", href: "/seller/dashboard" },
-    { label: "Medicines", href: "/seller/medicines" },
-    { label: "Orders", href: "/seller/orders" },
-  ],
+  SELLER: [{ label: "Dashboard", href: "/seller/dashboard" }],
 
   ADMIN: [{ label: "Dashboard", href: "/admin/dashboard" }],
 };

@@ -8,19 +8,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getStatusColor } from "@/components/get-status-color";
 
-type Author = {
+export type Author = {
   id: string;
   name: string;
   email: string;
 };
 
-type Order = {
+export type Order = {
   id: string;
   authorId: string;
   total: number;
   paymentStatus: string;
-  orderStatus:OrderStatus;
+  orderStatus: OrderStatus;
   address: string;
   createdAt: string;
   updatedAt: string;
@@ -28,29 +29,6 @@ type Order = {
 };
 
 export default function SellerOrders({ ordersData }: { ordersData: Order[] }) {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "PLACED":
-      case "PENDING":
-        return "bg-yellow-100 text-yellow-700";
-
-      case "CANCELLED":
-        return "bg-red-100 text-red-700";
-
-      case "PROCESSING":
-        return "bg-blue-100 text-blue-700";
-
-      case "SHIPPED":
-        return "bg-purple-100 text-purple-700";
-
-      case "DELIVERED":
-        return "bg-green-100 text-green-700";
-
-      default:
-        return "bg-gray-100 text-gray-700";
-    }
-  };
-
   return (
     <div className="p-6">
       <h1 className="text-2xl font-semibold mb-6">Seller Orders</h1>
@@ -67,9 +45,11 @@ export default function SellerOrders({ ordersData }: { ordersData: Order[] }) {
           </TableHeader>
 
           <TableBody>
-            {ordersData?.map((order: Order) => (
+            {ordersData?.map((order, index) => (
               <TableRow key={order.id}>
-                <TableCell className="font-medium">{order.id}</TableCell>
+                <TableCell className="font-medium">
+                  {ordersData.length - index}
+                </TableCell>
 
                 <TableCell>{order?.author?.name}</TableCell>
 
