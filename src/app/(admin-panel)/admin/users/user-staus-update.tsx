@@ -30,6 +30,7 @@ type User = {
   status: UserStatus;
 };
 export default function UserStatusUpdate({ user }: { user: User }) {
+  console.log(user?.id);
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<StatusForm>({
@@ -88,8 +89,8 @@ export default function UserStatusUpdate({ user }: { user: User }) {
                   </SelectTrigger>
 
                   <SelectContent>
-                    {userStatus?.map((status) => (
-                      <SelectItem key={status} value={status}>
+                    {userStatus?.map((status, idx) => (
+                      <SelectItem key={idx} value={status}>
                         {status}
                       </SelectItem>
                     ))}

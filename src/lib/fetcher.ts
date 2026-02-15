@@ -17,7 +17,7 @@ export const fetcher = async (
   endPoint: string,
   options: FetcherOption = {},
 ) => {
-  const { method = "GET", body, headers, cache, revalidate,tags } = options;
+  const { method = "GET", body, headers, cache, revalidate, tags } = options;
 
   try {
     const cookieStore = await cookies();

@@ -1,6 +1,7 @@
 import { fetcher } from "@/lib/fetcher";
 import LatestOrder from "./_components/latest-order";
 // import StatsCard from "./_components/stats-card";
+export const dynamic = "force-dynamic";
 
 const Page = async () => {
   const { data } = await fetcher(`/seller/orders`, { tags: ["sellerOrder"] });
