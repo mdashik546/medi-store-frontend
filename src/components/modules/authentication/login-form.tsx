@@ -47,9 +47,7 @@ export function LoginForm() {
   const onSubmit = async (value: LoginInput) => {
     const toastId = toast.loading("Logging in...");
     try {
-      const {  error } = await authClient.signIn.email(value, {
-        credentials: "include",
-      });
+      const {data, error } = await authClient.signIn.email(value);
       if (error) {
         toast.error(error.message, { id: toastId });
         return;
@@ -57,11 +55,11 @@ export function LoginForm() {
       toast.success("Logged in successfully!", { id: toastId });
       form.reset();
       router.push("/");
+      router.refresh()
     } catch (error) {
       toast.error("Internal Server Error", { id: toastId });
     }
   };
-
 
   return (
     <Card className="w-full max-w-sm mx-auto mt-10">

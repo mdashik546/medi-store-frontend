@@ -1,6 +1,18 @@
-import { createAuthClient } from "better-auth/react"; // make sure to import from better-auth/react
+import { createAuthClient } from "better-auth/react";
+
+const getBaseURL = () => {
+  if (
+    typeof window !== "undefined" &&
+    window.location.hostname === "localhost"
+  ) {
+    return "http://localhost:3000";
+  }
+  return "https://medi-store-frontend-pi.vercel.app";
+};
 
 export const authClient = createAuthClient({
-  //you can pass client configuration here
-  baseURL: "http://localhost:5000",
+  baseURL: getBaseURL(),
+  fetchOptions: {
+    credentials: "include",
+  },
 });

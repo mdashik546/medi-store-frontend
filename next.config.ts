@@ -9,10 +9,21 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  allowedDevOrigins: [
-    "http://localhost:3000",
-    "http://192.168.0.104:3000",
-  ],
+  async rewrites() {
+    return [
+      {
+        source: "/api/auth/:path*",
+        destination:
+          "https://medi-store-backend-two.vercel.app/api/auth/:path*",
+      },
+    ];
+  },
+  // allowedDevOrigins: [
+  //   "https://medi-store-backend-psi.vercel.app",
+  //   "https://medi-store-frontend-tau.vercel.app",
+  //   "http://localhost:3000",
+  //   "http://192.168.0.104:3000",
+  // ],
 };
 
 export default nextConfig;
