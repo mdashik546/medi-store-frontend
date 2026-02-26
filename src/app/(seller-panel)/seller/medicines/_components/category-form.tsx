@@ -14,30 +14,30 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 const medicineSchema = z.object({
-  companyName: z.string().min(2, "Company name required"),
+  categoryName: z.string().min(2, "Category name required"),
 });
 
 type MedicineInput = z.infer<typeof medicineSchema>;
-const CompanyForm = () => {
-  const [companyAdded, setCompanyAdded] = useState(false);
+const CategoryForm = () => {
+  const [categoryAdded, setCategoryAdded] = useState(false);
   const form = useForm<MedicineInput>({
     resolver: zodResolver(medicineSchema),
     defaultValues: {
-      companyName: "",
+      categoryName: "",
     },
   });
 
   const onSubmit = async (value: MedicineInput) => {
-    const companyName = form.getValues("companyName")?.trim();
-    if (!companyName) return;
-    const toastId = toast.loading("Creating company...");
+    const categoryName = form.getValues("categoryName")?.trim();
+    if (!categoryName) return;
+    const toastId = toast.loading("Creating category...");
     try {
-      const resCompany = await medicineService.createCompany(value);
-      toast.success(resCompany.message, { id: toastId });
-      setCompanyAdded(true);
+      const res = await medicineService.createCategory(value);
+      toast.success(res.message, { id: toastId });
+      setCategoryAdded(true);
     } catch (error: any) {
       console.error(error);
-      toast.error(error?.message || "Failed to create company", {
+      toast.error(error?.message || "Failed to create category", {
         id: toastId,
       });
     }
@@ -47,38 +47,38 @@ const CompanyForm = () => {
     <div>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FieldGroup>
-          {!companyAdded && (
+          {!categoryAdded && (
             <Controller
-              name="companyName"
+              name="categoryName"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel>Company Name</FieldLabel>
-                  <Input {...field} placeholder="Enter company name" />
+                  <FieldLabel>Category Name</FieldLabel>
+                  <Input {...field} placeholder="Enter category name" />
                   {fieldState.error && (
                     <FieldError errors={[fieldState.error]} />
                   )}
 
                   <Button type="submit" className="mt-2 w-full">
-                    {form.formState.isSubmitting ? <Spinner /> : "Add Company"}
+                    {form.formState.isSubmitting ? <Spinner /> : "Add Category"}
                   </Button>
                 </Field>
               )}
             />
           )}
 
-          {companyAdded && (
+          {categoryAdded && (
             <>
               <div className="flex justify-between items-center">
                 <p className="text-sm text-muted-foreground">
-                  Company: {form.watch("companyName")}
+                  Category: {form.watch("categoryName")}
                 </p>
 
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
-                  onClick={() => setCompanyAdded(false)}
+                  onClick={() => setCategoryAdded(false)}
                 >
                   Change
                 </Button>
@@ -91,4 +91,4 @@ const CompanyForm = () => {
   );
 };
 
-export default CompanyForm;
+export default CategoryForm;

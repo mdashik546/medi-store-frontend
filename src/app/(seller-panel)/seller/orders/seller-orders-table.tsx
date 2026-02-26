@@ -46,32 +46,42 @@ export default function SellerOrders({ ordersData }: { ordersData: Order[] }) {
           </TableHeader>
 
           <TableBody>
-            {ordersData?.map((order, index) => (
-              <TableRow key={order.id}>
-                <TableCell className="font-medium">
-                  {ordersData.length - index}
-                </TableCell>
-
-                <TableCell>{order?.author?.name}</TableCell>
-
-                <TableCell>৳ {order.total}</TableCell>
-                <TableCell>৳ {order.address}</TableCell>
-
-                <TableCell>
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                      order.orderStatus,
-                    )}`}
-                  >
-                    {order.orderStatus}
-                  </span>
-                </TableCell>
-
-                <TableCell className="text-right">
-                  <OrderStatusChange order={order} />
+            {ordersData?.length === undefined || ordersData?.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} className="text-center py-4">
+                  No orders available
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              <>
+                {ordersData?.map((order, index) => (
+                  <TableRow key={order.id}>
+                    <TableCell className="font-medium">
+                      {ordersData.length - index}
+                    </TableCell>
+
+                    <TableCell>{order?.author?.name}</TableCell>
+
+                    <TableCell>৳ {order.total}</TableCell>
+                    <TableCell>৳ {order.address}</TableCell>
+
+                    <TableCell>
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                          order.orderStatus,
+                        )}`}
+                      >
+                        {order.orderStatus}
+                      </span>
+                    </TableCell>
+
+                    <TableCell className="text-right">
+                      <OrderStatusChange order={order} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </>
+            )}
           </TableBody>
         </Table>
       </div>

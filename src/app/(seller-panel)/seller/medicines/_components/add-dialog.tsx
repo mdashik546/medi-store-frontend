@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,8 +9,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
-import CompanyForm from "./company-form";
 import { MedicineForm } from "./medicine-form";
+import CategoryForm from "./category-form";
 export function MedicineDialog() {
   return (
     <Dialog>
@@ -22,10 +22,10 @@ export function MedicineDialog() {
         <DialogHeader>
           <DialogTitle>Add Medicine</DialogTitle>
           <DialogDescription>
-            Add company first, then medicine info
+            Add category first, then medicine info
           </DialogDescription>
         </DialogHeader>
-        <CompanyForm />
+        {/* <CategoryForm /> */}
         <MedicineForm />
       </DialogContent>
     </Dialog>

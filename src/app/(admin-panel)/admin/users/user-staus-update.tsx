@@ -30,7 +30,6 @@ type User = {
   status: UserStatus;
 };
 export default function UserStatusUpdate({ user }: { user: User }) {
-  console.log(user?.id);
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<StatusForm>({
@@ -46,8 +45,7 @@ export default function UserStatusUpdate({ user }: { user: User }) {
     startTransition(async () => {
       const toastId = toast.loading("Updating status...");
       try {
-        const res = await updateStatusAction(user?.id, newStatus);
-        console.log(res);
+        await updateStatusAction(user?.id, newStatus);
 
         toast.success("Status updated", {
           id: toastId,

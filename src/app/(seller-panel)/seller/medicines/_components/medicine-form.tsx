@@ -19,29 +19,17 @@ import { useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-const medicineSchema = z.object({
-  name: z.string().min(2, "Medicine name required"),
-  price: z.number().min(1),
-  stock: z.number().min(1),
-  description: z
-    .string()
-    .min(20, "Description must be at least 20 characters")
-    .or(z.literal(""))
-    .optional(),
-  categoryId: z.string().optional(),
-  expiryDate: z.string().min(1, "Expiry date is required"),
-  imageURL: z.string().min(1),
-});
+import { medicineSchema } from "./medicine.schema";
 
 type MedicineInput = z.infer<typeof medicineSchema>;
 export const MedicineForm = ({ item }: any) => {
   const form = useForm<MedicineInput>({
     resolver: zodResolver(medicineSchema),
     defaultValues: {
+      categoryName: "",
       name: "",
       price: 0,
       stock: 0,
-      categoryId: "",
       description: "",
       expiryDate: "",
       imageURL: undefined,
@@ -54,7 +42,6 @@ export const MedicineForm = ({ item }: any) => {
         name: item.name || "",
         price: item.price || 0,
         stock: item.stock || 0,
-        categoryId: item.categoryId || "",
         description: item.description || "",
         expiryDate: item.expiryDate || undefined,
         imageURL: item.imageURL || undefined,
@@ -84,7 +71,21 @@ export const MedicineForm = ({ item }: any) => {
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
       <FieldGroup>
-        {/* Name */}
+        {/* category Name */}
+        {!item?.id && (
+          <Controller
+            name="categoryName"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel>Category Name</FieldLabel>
+                <Input {...field} placeholder="category name" />
+                {fieldState.error && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+        )}
+
         <Controller
           name="name"
           control={form.control}
@@ -134,7 +135,7 @@ export const MedicineForm = ({ item }: any) => {
         />
 
         {/* Expiry */}
-        {item?.id ? null : (
+        {!item?.id && (
           <>
             <Controller
               name="expiryDate"

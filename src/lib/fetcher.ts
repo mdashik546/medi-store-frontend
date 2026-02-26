@@ -34,11 +34,11 @@ export const fetcher = async (
       next: revalidate || tags ? { revalidate, tags } : undefined,
     });
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      console.log("API Error:", errorData.message);
-      throw new Error(errorData.message);
-    }
+    // if (!res.ok) {
+    //   const errorData = await res.json();
+    //   console.log("API Error:", errorData.message);
+    //   throw new Error(errorData.message);
+    // }
 
     return await res.json();
   } catch (error) {

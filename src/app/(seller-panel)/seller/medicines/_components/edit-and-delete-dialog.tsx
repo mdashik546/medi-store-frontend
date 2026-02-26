@@ -21,7 +21,9 @@ export const EditAndDeleteDialog = ({ item }: any) => {
       </Dialog>
       <Button
         variant="destructive"
-        onClick={() => handleDelete(`/seller/medicines/${item.id}`, "medicine")}
+        onClick={() =>
+          handleDelete(`/seller/medicines/${item?.id}`, "medicine")
+        }
       >
         Delete
       </Button>

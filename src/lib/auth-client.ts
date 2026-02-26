@@ -1,11 +1,11 @@
-import { createAuthClient } from "better-auth/react";
+import { createAuthClient } from 'better-auth/react';
 
 const getBaseURL = () => {
   if (
     typeof window !== "undefined" &&
     window.location.hostname === "localhost"
   ) {
-    return "http://localhost:3000";
+    return "http://localhost:5000";
   }
   return "https://medi-store-frontend-pi.vercel.app";
 };

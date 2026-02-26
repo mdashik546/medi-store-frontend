@@ -4,6 +4,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const navItems = [
     { label: "Dashboard", href: "/admin/dashboard" },
     { label: "Users", href: "/admin/users" },
+    { label: "Categories", href: "/admin/categories" },
   ];
   return (
     <div className="flex lg:flex-row flex-col gap-5">

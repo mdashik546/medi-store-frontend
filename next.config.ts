@@ -14,7 +14,9 @@ const nextConfig: NextConfig = {
       {
         source: "/api/auth/:path*",
         destination:
-          "https://medi-store-backend-two.vercel.app/api/auth/:path*",
+          process.env.NODE_ENV === "development"
+            ? "http://localhost:5000/api/auth/:path*"
+            : "https://medi-store-backend-two.vercel.app/api/auth/:path*",
       },
     ];
   },

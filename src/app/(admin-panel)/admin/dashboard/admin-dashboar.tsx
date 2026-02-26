@@ -16,7 +16,6 @@ const AdminDashboar = ({
   data: any;
   orderData: Order[];
 }) => {
-    console.log(orderData);
   return (
     <div className="lg:px-0 px-4">
       <h1 className="text-2xl font-semibold mb-6 mt-2">Dashboard</h1>
@@ -59,6 +58,13 @@ const AdminDashboar = ({
             </TableHeader>
 
             <TableBody>
+              {orderData?.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center py-4">
+                    No orders found.
+                  </TableCell>
+                </TableRow>
+              )}
               {orderData?.slice(0, 8)?.map((order, index) => (
                 <TableRow key={order.id}>
                   <TableCell className="font-medium">

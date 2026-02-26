@@ -41,34 +41,47 @@ const LatestOrder = ({ orderData }: { orderData: Order[] }) => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {orderData?.slice(0, 8)?.map((order, index) => (
-                  <TableRow
-                    key={order.id}
-                    className="border-b border-border hover:bg-muted/30 transition-colors"
-                  >
-                    <TableCell className="font-semibold text-foreground">
-                      {orderData.length - index}
-                    </TableCell>
-                    <TableCell className="text-foreground">
-                      {order.author?.name}
-                    </TableCell>
-                    <TableCell className="text-foreground">
-                      ৳ {order.total}
-                    </TableCell>
-                    <TableCell>
-                      <span
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                          order.orderStatus,
-                        )}`}
-                      >
-                        {order.orderStatus}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-foreground">
-                      {order.updatedAt}
+                {orderData?.length === undefined || orderData?.length === 0 ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={9}
+                      className="text-center py-6 text-gray-500"
+                    >
+                      No data found
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  <>
+                    {orderData?.slice(0, 8)?.map((order, index) => (
+                      <TableRow
+                        key={order.id}
+                        className="border-b border-border hover:bg-muted/30 transition-colors"
+                      >
+                        <TableCell className="font-semibold text-foreground">
+                          {orderData.length - index}
+                        </TableCell>
+                        <TableCell className="text-foreground">
+                          {order.author?.name}
+                        </TableCell>
+                        <TableCell className="text-foreground">
+                          ৳ {order.total}
+                        </TableCell>
+                        <TableCell>
+                          <span
+                            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                              order.orderStatus,
+                            )}`}
+                          >
+                            {order.orderStatus}
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-foreground">
+                          {order.updatedAt}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </>
+                )}
               </TableBody>
             </Table>
           </div>
